@@ -14,7 +14,9 @@ int random_number(int upper, int lower){
     int random_value =  (rand() % (upper - lower + 1)) + lower;
     return random_value;
 }
-void print_map (int map[SIZE][SIZE], int spawn_x, int spawn_y) {
+
+void print_map (int map[SIZE][SIZE], int spawn_x, int spawn_y, int enemy1_x, int enemy1_y) {
+    
     // generate random position on (x,y)
     // plane for player to spawn in
     int i = 0;
@@ -24,6 +26,11 @@ void print_map (int map[SIZE][SIZE], int spawn_x, int spawn_y) {
             if(i == spawn_x && j == spawn_y){
                 printf("\033[1;33m");//Set the text to the color red
                 printf("B "); //Display Butch in yellow
+                printf("\033[0m");
+            }
+            else if(i == enemy1_x && j == enemy1_y){
+                printf("\033[1;31m");
+                printf("E ");
                 printf("\033[0m");
             }
             else{
@@ -53,7 +60,7 @@ void bomb_explosion (int radius, int map[SIZE][SIZE], int startx, int starty) {
         }
     }
 }
-void check_for_game_end (int map[SIZE][SIZE], int laser_y, int spawn_x, int spawn_y) {
+void check_for_game_end (int map[SIZE][SIZE], int laser_y, int spawn_x, int spawn_y, int enemy1_x, int enemy1_y) {
     int x;
     int y;
     int counter = 0;
@@ -64,8 +71,8 @@ void check_for_game_end (int map[SIZE][SIZE], int laser_y, int spawn_x, int spaw
             }
         }
     }
-    if (counter == 144) {
-        print_map (map, spawn_x, spawn_y);
+    if (counter == 143) {
+        print_map (map, spawn_x, spawn_y, enemy1_x, enemy1_y);
         printf ("Game Won!\n");
         exit (0);
     }
@@ -74,8 +81,11 @@ int main(void) {
     int direction;
     int spawn_x = random_number(12,0);
     int spawn_y = random_number(12,0);
+    int enemy1_x = random_number(12,0);
+    int enemy1_y = random_number(12,0);
+
     int map[SIZE][SIZE] = {EMPTY};
-    print_map(map, spawn_x, spawn_y);
+    print_map(map, spawn_x, spawn_y, enemy1_x, enemy1_y);
     printf("You are Butch, a member of the [redacted] military tasked taking down human hybrid bioweapons that escaped from a top-secret testing facility in [redacted].\n");
     printf("You are tasked with rescuing civilians and taking down these enemies with your long ranged sniper.\n ");
     printf("Enter Direction using numpad\n");
@@ -92,18 +102,29 @@ int main(void) {
                 spawn_x--;
             }
             spawn_x++;
-            
         }
         else if(direction == 4) {
+            if(spawn_y == 0){
+                spawn_y++;
+                printf("Butch: You really expect me to leave right now?\n");
+            }
             spawn_y--;
         }
         else if(direction == 6) {
+            if(spawn_y == 12){
+                spawn_y--;
+                printf("This is not the time to abandon my post!\n");
+            }
             spawn_y++;
         }
         else if(direction == 8) {
+            if(spawn_x == 0){
+                printf("I can't leave! I can't leave these people to die!\n");
+                spawn_x++;
+            }
             spawn_x--;
         }
-        print_map(map, spawn_x, spawn_y);
+        print_map(map, spawn_x, spawn_y, enemy1_x, enemy1_y);
 
 
     }
