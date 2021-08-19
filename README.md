@@ -1,2 +1,2 @@
 # Locked-n-Loaded
-A simple game in c where you shoot enemies while moving around the 2d map
+A simple game created using the C language in which the player shoots enemies while moving around the 2d map.
