@@ -6,19 +6,13 @@
 #include "locked_n_loaded.h"
 
 
-
-
-#define EMPTY 0
-#define STONE 1
-
-
 int main(void) {
 
-    printf(" __         ______     ______     __  __     ______     _____        __   __        __         ______     ______     _____     ______     _____ \n");    
-    printf("/\\ \\       /\\  __ \\   /\\  ___\\   /\\ \\/ /    /\\  ___\\   /\\  __-.     /\\ -.\\ \\      /\\ \\       /\\  __ \\   /\\  __ \\   /\\  __-.  /\\ ___\\   /\\  __-.\n");  
-    printf("\\ \\ \\____  \\ \\ \\/\\ \\  \\ \\ \\____  \\ \\  _-.  \\ \\  __\\   \\ \\ \\/\\ \\    \\ \\ \\-.  \\     \\ \\ \\____  \\ \\ \\/\\ \\  \\ \\  __ \\  \\ \\ \\/\\ \\ \\ \\  __\\   \\ \\ \\/\\ \\ \n");
-    printf(" \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_____\\  \\ \\____-     \\ \\_\\\\_\\     \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\____-  \\ \\_____\\  \\ \\____- \n");
-    printf("  \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/   \\/_____/   \\/____/      \\/_/ \\/_/      \\/_____/   \\/_____/   \\/_/\\/_/   \\/____/   \\/_____/   \\/____/\n"); 
+    printf("\e[0;35m __         ______     ______     __  __     ______     _____        __   __        __         ______     ______     _____     ______     _____ \n");    
+    printf("\e[0;35m/\\ \\       /\\  __ \\   /\\  ___\\   /\\ \\/ /    /\\  ___\\   /\\  __-.     /\\ -.\\ \\      /\\ \\       /\\  __ \\   /\\  __ \\   /\\  __-.  /\\ ___\\   /\\  __-.\n");  
+    printf("\e[0;35m\\ \\ \\____  \\ \\ \\/\\ \\  \\ \\ \\____  \\ \\  _-.  \\ \\  __\\   \\ \\ \\/\\ \\    \\ \\ \\-.  \\     \\ \\ \\____  \\ \\ \\/\\ \\  \\ \\  __ \\  \\ \\ \\/\\ \\ \\ \\  __\\   \\ \\ \\/\\ \\ \n");
+    printf("\e[0;35m \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_____\\  \\ \\____-     \\ \\_\\\\_\\     \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\____-  \\ \\_____\\  \\ \\____- \n");
+    printf("\e[0;35m  \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/   \\/_____/   \\/____/      \\/_/ \\/_/      \\/_____/   \\/_____/   \\/_/\\/_/   \\/____/   \\/_____/   \\/____/\n"); 
     printf("\n");                                                                                                               
 
     char direction;
@@ -37,19 +31,20 @@ int main(void) {
     }
     map[enemy1_x][enemy1_y] = 1;
 
-    
-
-    print_map(map);
-    printf("You are Butch, a member of the [redacted] military tasked taking down human hybrid bioweapons that escaped from a top-secret testing facility in [redacted].\n");
+   
+    printf("\e[1;32mYou are Butch, a member of the [redacted] military tasked taking down human hybrid bioweapons that escaped from a top-secret testing facility in [redacted].\n");
     printf("You are tasked with rescuing civilians and taking down these enemies with your long ranged sniper.\n ");
     printf("Enter Direction using numpad\n");
+    color_reset();
+    printf("\n");
     printf("Press W to go up\n");
     printf("Press S to go down\n");
     printf("Press A to go left\n");
     printf("Press D to go right\n");
+    printf("Press E to exit game\n");
     int keeplooping = 1;
     while(keeplooping == 1){
-        scanf("%c", &direction);
+        scanf(" %c", &direction);
         map[spawn_x][spawn_y] = 0;
         if(direction == 's' || direction == 'S') {
             if(spawn_x == SIZE - 1) {
@@ -78,13 +73,31 @@ int main(void) {
                 spawn_x++;
             }
             spawn_x--;
+            map[spawn_x][spawn_y] = 15;
+        } 
+        else if(direction == 'f' || direction == 'F') {
+            shoot_laser(map, spawn_x);
+        }   
+        else if(direction == 'e' || direction == 'E') {
+            printf("\e[0;92mThank you for playing ");
+            color_reset();
+            printf("\e[1;95mLocked-n-loaded");
+            exit(0);
         }
-        map[spawn_x][spawn_y] = 15;
-        if(map[enemy1_x][enemy1_y] == 0) {
-            map[enemy1_x][enemy1_y] == 2;
+        if(map[spawn_x][spawn_y] == 2) {
+            printf("\e[1;30mTeleporting to next infestation site...\n");
         }
-        print_map(map);
+        else {
+            map[spawn_x][spawn_y] = 15;
+        
+            if(map[enemy1_x][enemy1_y] == 0) {
+                map[enemy1_x][enemy1_y] = 2;
+            }
+            print_map(map);
+        }
+        
     }
+   
 }
 void print_map (int map[SIZE][SIZE]) {
     
@@ -96,7 +109,7 @@ void print_map (int map[SIZE][SIZE]) {
         int j = 0;
         while(j < SIZE) {
             if(map[i][j] == 15) {
-                printf("\033[1;33m");//Set the text to the color red
+                printf("\033[1;33m");//Set the text to the color yellow
                 printf("B "); //Display Butch in yellow
                 printf("\033[0m");
             }
@@ -105,7 +118,12 @@ void print_map (int map[SIZE][SIZE]) {
                 printf("E ");
                 printf("\033[0m");
             }
-            else{
+            else if(map[i][j] == 2) {
+                printf("\e[1;32m");
+                printf("T ");
+                color_reset();
+            }
+            else if(map[i][j] == 0) {
                 printf("%d ", map[i][j]);
             }
             j++;
@@ -170,7 +188,7 @@ void shoot_laser (int map[SIZE][SIZE], int laser_y) {
         if (map[laser_y][x] == STONE && stone_counter < 4) {
             map[laser_y][x] = EMPTY;
             stone_counter++;
-            check_for_game_end (map);
+            //check_for_game_end (map);
             // Using the blocks variable that scanned the number of blocks
             // and doing blocks= blocks - 1 does not work inside this function
             // It only works in the main function so 
@@ -183,10 +201,16 @@ void shoot_laser (int map[SIZE][SIZE], int laser_y) {
         }
         x++; 
     }
-    print_map(map);
+    //print_map(map);
 }
 int random_number(int upper, int lower){ // [1,2]
     srand(time(0));
     int random_value =  (rand() % (upper - lower + 1)) + lower;
     return random_value;
+}
+void color_reset() {
+    printf("\e[0m");
+}
+void red() {
+    printf("\e[0;31m");
 }
