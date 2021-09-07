@@ -16,20 +16,31 @@ int main(void) {
     printf("\n");                                                                                                               
 
     char direction;
-    int spawn_x = random_number(12,0);
-    int spawn_y = random_number(12,0);
-    int enemy1_x = random_number(12,0);
-    int enemy1_y = random_number(12,0);
+    int spawn_x = random_number(15,0);
+    int spawn_y = random_number(15,0);
+    int enemy1_x = random_number(15,0);
+    int enemy1_y = random_number(15,0);
+    int enemy2_x = random_number(15,0);
+    int enemy2_y = random_number(15,0);
+    int enemy3_x = random_number(15,0);
+    int enemy3_y = random_number(15,0);
+    int enemy4_x = random_number(15,0);
+    int enemy4_y = random_number(15,0);
    
 
     int map[SIZE][SIZE] = {EMPTY};
     if(spawn_x == enemy1_x && spawn_y == enemy1_y) {
         while(spawn_x == enemy1_x && spawn_y == enemy1_y) {
-             enemy1_x = random_number(12,0);
+            enemy1_x = random_number(12,0);
             enemy1_y = random_number(12,0);
         }
     }
+
+    
     map[enemy1_x][enemy1_y] = 1;
+    map[enemy2_x][enemy2_y] = 1;
+    map[enemy3_x][enemy3_y] = 1;
+    map[enemy4_x][enemy4_y] = 1;
 
    
     printf("\e[1;32mYou are Butch, a member of the [redacted] military tasked taking down human hybrid bioweapons that escaped from a top-secret testing facility in [redacted].\n");
@@ -41,7 +52,9 @@ int main(void) {
     printf("Press S to go down\n");
     printf("Press A to go left\n");
     printf("Press D to go right\n");
+    printf("Press F to shoot, you your shot will shoot horizontally in two directions");
     printf("Press E to exit game\n");
+    printf("Press B for a bomb\n");
     int keeplooping = 1;
     while(keeplooping == 1){
         scanf(" %c", &direction);
@@ -84,8 +97,15 @@ int main(void) {
             printf("\e[1;95mLocked-n-loaded");
             exit(0);
         }
+        else if(direction == 'b' || direction == 'B') {
+            int bomb_start_x = random_number(SIZE, 0);
+            int bomb_start_y = random_number(SIZE, 0);
+            map[bomb_start_x][bomb_start_y] = 4;
+        }
         if(map[spawn_x][spawn_y] == 2) {
             printf("\e[1;30mTeleporting to next infestation site...\n");
+            color_reset();
+            break;
         }
         else {
             map[spawn_x][spawn_y] = 15;
@@ -97,8 +117,40 @@ int main(void) {
         }
         
     }
+    
+    int map2[SIZE][SIZE] = {EMPTY};
+   
+    /*
+    int n = SIZE;
+    for (int k = 1; k <= n; k++) {
+        for (int c = 1; c <= n-k; c++) {
+            //printf(" ");
+        }
+        for (int c = 1; c <= 2*k-1; c++) {
+            map2[k][c] = STONE;
+            //printf("*");
+        }
+       // printf("\n");
+    }
+
+    for (int k = 1; k <= n - 1; k++) {
+        for (int c = 1; c <= k; c++)
+            //printf(" ");
+
+        for (int c = 1 ; c <= 2*(n-k)-1; c++) {
+
+        
+            map[k][c] = STONE;
+            //printf("*");
+
+            //printf("\n");
+        }
+    }
+    print_map(map2);
+    */
    
 }
+
 void print_map (int map[SIZE][SIZE]) {
     
     // generate random position on (x,y)
@@ -110,7 +162,7 @@ void print_map (int map[SIZE][SIZE]) {
         while(j < SIZE) {
             if(map[i][j] == 15) {
                 printf("\033[1;33m");//Set the text to the color yellow
-                printf("B "); //Display Butch in yellow
+                printf("P "); //Display Butch in yellow
                 printf("\033[0m");
             }
             else if(map[i][j] == 1){
@@ -125,6 +177,9 @@ void print_map (int map[SIZE][SIZE]) {
             }
             else if(map[i][j] == 0) {
                 printf("%d ", map[i][j]);
+            }
+            else if(map[i][j] == 4) {
+                printf("B  ");
             }
             j++;
         }
@@ -150,6 +205,7 @@ void check_for_game_end (int map[SIZE][SIZE]) {
         exit (0);
     }
 }
+
 void bomb_explosion (int radius, int map[SIZE][SIZE], int startx, int starty) {
     // I am going to map out the area that an explosion from a bomb the
     // player can use that will create a circle bomb radius

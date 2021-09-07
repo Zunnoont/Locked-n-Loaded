@@ -6,6 +6,7 @@
 #define EMPTY 0
 #define STONE 1
 #define SIZE 15
+#define SIZE2 20
 
 void print_map (int map[SIZE][SIZE]);
 
