@@ -8,7 +8,7 @@
 
 int main(void) {
 
-    printf("\e[0;35m __         ______     ______     __  __     ______     _____        __   __        __         ______     ______     _____     ______     _____ \n");    
+    printf("\e[0;35m __         ______     ______     __  __     ______     _____        __   __        __         ______     ______     _____     ______    _____ \n");    
     printf("\e[0;35m/\\ \\       /\\  __ \\   /\\  ___\\   /\\ \\/ /    /\\  ___\\   /\\  __-.     /\\ -.\\ \\      /\\ \\       /\\  __ \\   /\\  __ \\   /\\  __-.  /\\ ___\\   /\\  __-.\n");  
     printf("\e[0;35m\\ \\ \\____  \\ \\ \\/\\ \\  \\ \\ \\____  \\ \\  _-.  \\ \\  __\\   \\ \\ \\/\\ \\    \\ \\ \\-.  \\     \\ \\ \\____  \\ \\ \\/\\ \\  \\ \\  __ \\  \\ \\ \\/\\ \\ \\ \\  __\\   \\ \\ \\/\\ \\ \n");
     printf("\e[0;35m \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_____\\  \\ \\____-     \\ \\_\\\\_\\     \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\____-  \\ \\_____\\  \\ \\____- \n");
@@ -27,23 +27,41 @@ int main(void) {
     int enemy4_x = random_number(15,0);
     int enemy4_y = random_number(15,0);
    
-
     int map[SIZE][SIZE] = {EMPTY};
     if(spawn_x == enemy1_x && spawn_y == enemy1_y) {
         while(spawn_x == enemy1_x && spawn_y == enemy1_y) {
-            enemy1_x = random_number(12,0);
-            enemy1_y = random_number(12,0);
+            enemy1_x = random_number(15,0);
+            enemy1_y = random_number(15,0);
+        }
+    }
+    if(spawn_x == enemy2_x && spawn_y == enemy2_y) {
+        while(spawn_x == enemy2_x && spawn_y == enemy2_y) {
+            enemy2_x = random_number(15,0);
+            enemy2_y = random_number(15,0);
+        }
+    }
+    if(spawn_x == enemy3_x && spawn_y == enemy3_y) {
+        while(spawn_x == enemy3_x && spawn_y == enemy3_y) {
+            enemy3_x = random_number(15,0);
+            enemy3_y = random_number(15,0);
+        }
+    }
+    if(spawn_x == enemy4_x && spawn_y == enemy4_y) {
+        while(spawn_x == enemy4_x && spawn_y == enemy4_y) {
+            enemy4_x = random_number(15,0);
+            enemy4_y = random_number(15,0);
         }
     }
 
     
-    map[enemy1_x][enemy1_y] = 1;
-    map[enemy2_x][enemy2_y] = 1;
-    map[enemy3_x][enemy3_y] = 1;
-    map[enemy4_x][enemy4_y] = 1;
+    map[enemy1_x][enemy1_y] = ENEMY;
+    map[enemy2_x][enemy2_y] = ENEMY;
+    map[enemy3_x][enemy3_y] = ENEMY;
+    map[enemy4_x][enemy4_y] = ENEMY;
 
    
     printf("\e[1;32mYou are Butch, a member of the [redacted] military tasked taking down human hybrid bioweapons that escaped from a top-secret testing facility in [redacted].\n");
+    printf("\n");
     printf("You are tasked with rescuing civilians and taking down these enemies with your long ranged sniper.\n ");
     printf("Enter Direction using numpad\n");
     color_reset();
@@ -62,6 +80,7 @@ int main(void) {
         if(direction == 's' || direction == 'S') {
             if(spawn_x == SIZE - 1) {
                 printf("Butch: I can't leave and let those monsters wreak havoc on the people nearby!\n");
+                printf("\n");
                 spawn_x--;
             }
             spawn_x++;
@@ -70,6 +89,7 @@ int main(void) {
             if(spawn_y == 0){
                 spawn_y++;
                 printf("Butch: You really expect me to leave right now?\n");
+                printf("\n");
             }
             spawn_y--;
         }
@@ -77,12 +97,14 @@ int main(void) {
             if(spawn_y == SIZE - 1){
                 spawn_y--;
                 printf("This is not the time to abandon my post!\n");
+                printf("\n");
             }
             spawn_y++;
         }
         else if(direction == 'w' || direction == 'W') {
             if(spawn_x == 0){
                 printf("I can't leave! I can't leave these people to die!\n");
+                printf("\n");
                 spawn_x++;
             }
             spawn_x--;
@@ -110,44 +132,30 @@ int main(void) {
         else {
             map[spawn_x][spawn_y] = 15;
         
-            if(map[enemy1_x][enemy1_y] == 0) {
-                map[enemy1_x][enemy1_y] = 2;
+            if(map[enemy1_x][enemy1_y] == EMPTY) {
+                map[enemy1_x][enemy1_y] = PORTAL;
+            }
+            if(map[enemy1_x][enemy1_y] == ENEMY) {
+                map[enemy1_x][enemy1_y] = EMPTY;
+                enemy1_y--;
+                map[enemy1_x][enemy1_y] = ENEMY;
+            }
+            if(map[enemy2_x][enemy2_y] == ENEMY) {
+                map[enemy2_x][enemy2_y] = EMPTY;
+                enemy2_y--;
+                map[enemy2_x][enemy2_y] = ENEMY;
             }
             print_map(map);
         }
         
     }
     
-    int map2[SIZE][SIZE] = {EMPTY};
+    //int map2[SIZE - 5][SIZE - 5] = {EMPTY};
    
-    /*
-    int n = SIZE;
-    for (int k = 1; k <= n; k++) {
-        for (int c = 1; c <= n-k; c++) {
-            //printf(" ");
-        }
-        for (int c = 1; c <= 2*k-1; c++) {
-            map2[k][c] = STONE;
-            //printf("*");
-        }
-       // printf("\n");
-    }
-
-    for (int k = 1; k <= n - 1; k++) {
-        for (int c = 1; c <= k; c++)
-            //printf(" ");
-
-        for (int c = 1 ; c <= 2*(n-k)-1; c++) {
-
-        
-            map[k][c] = STONE;
-            //printf("*");
-
-            //printf("\n");
-        }
-    }
-    print_map(map2);
-    */
+    
+  
+    //print_map(map2);
+    
    
 }
 
@@ -165,21 +173,23 @@ void print_map (int map[SIZE][SIZE]) {
                 printf("P "); //Display Butch in yellow
                 printf("\033[0m");
             }
-            else if(map[i][j] == 1){
+            else if(map[i][j] == ENEMY){
                 printf("\033[1;31m");
                 printf("E ");
                 printf("\033[0m");
             }
-            else if(map[i][j] == 2) {
+            else if(map[i][j] == PORTAL) {
                 printf("\e[1;32m");
                 printf("T ");
                 color_reset();
             }
-            else if(map[i][j] == 0) {
+            else if(map[i][j] == EMPTY) {
                 printf("%d ", map[i][j]);
             }
-            else if(map[i][j] == 4) {
-                printf("B  ");
+            else if(map[i][j] == BOMB) {
+                printf("\e[1;35m");
+                printf("B ");
+                color_reset();
             }
             j++;
         }
@@ -241,7 +251,7 @@ void shoot_laser (int map[SIZE][SIZE], int laser_y) {
     // and one will remain which is the most furtherst out, 6 5 1.
     while (keeplooping == 1 && x < SIZE) {
         // we just shoot the laser and turn everything into 0 there
-        if (map[laser_y][x] == STONE && stone_counter < 4) {
+        if (map[laser_y][x] == ENEMY && stone_counter < 4) {
             map[laser_y][x] = EMPTY;
             stone_counter++;
             //check_for_game_end (map);
