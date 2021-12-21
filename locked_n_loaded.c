@@ -16,8 +16,8 @@ int main(void) {
     printf("\n");                                                                                                               
 
     char direction;
-    int spawn_x = random_number(15,0);
-    int spawn_y = random_number(15,0);
+    int spawn_x = random_number(15,1);
+    int spawn_y = random_number(15,1);
     int enemy1_x = random_number(15,0);
     int enemy1_y = random_number(15,0);
     int enemy2_x = random_number(15,0);
@@ -58,11 +58,15 @@ int main(void) {
     map[enemy2_x][enemy2_y] = ENEMY;
     map[enemy3_x][enemy3_y] = ENEMY;
     map[enemy4_x][enemy4_y] = ENEMY;
+    for(int i = 0; i < SIZE; i++) {
+        map[i][0] = GATE;
+    }
 
    
     printf("\e[1;32mYou are Butch, a member of the [redacted] military tasked taking down human hybrid bioweapons that escaped from a top-secret testing facility in [redacted].\n");
     printf("\n");
     printf("You are tasked with rescuing civilians and taking down these enemies with your long ranged sniper.\n ");
+    printf("\n");
     printf("Enter Direction using numpad\n");
     color_reset();
     printf("\n");
@@ -111,7 +115,7 @@ int main(void) {
             map[spawn_x][spawn_y] = 15;
         } 
         else if(direction == 'f' || direction == 'F') {
-            shoot_laser(map, spawn_x);
+            shoot_laser(map, spawn_x, spawn_y);
         }   
         else if(direction == 'e' || direction == 'E') {
             printf("\e[0;92mThank you for playing ");
@@ -147,7 +151,6 @@ int main(void) {
             }
             print_map(map);
         }
-        
     }
     
     //int map2[SIZE - 5][SIZE - 5] = {EMPTY};
@@ -191,6 +194,9 @@ void print_map (int map[SIZE][SIZE]) {
                 printf("B ");
                 color_reset();
             }
+            else if(map[i][j] == GATE) {
+                printf("} ");
+            }
             j++;
         }
         printf("\n");
@@ -233,7 +239,7 @@ void bomb_explosion (int radius, int map[SIZE][SIZE], int startx, int starty) {
         }
     }
 }
-void shoot_laser (int map[SIZE][SIZE], int laser_y) {
+void shoot_laser (int map[SIZE][SIZE], int laser_y, int laser_x) {
     int keeplooping = 1;
     int x = 0;
     // this x variable will go through every element of the row checking 
@@ -267,7 +273,19 @@ void shoot_laser (int map[SIZE][SIZE], int laser_y) {
         }
         x++; 
     }
-    //print_map(map);
+    int y = 0;
+    stone_counter = 0;
+    while(keeplooping == 1 && y < SIZE) {
+        if(map[y][laser_x] == ENEMY && stone_counter < 4) {
+            map[y][laser_x] = EMPTY;
+            stone_counter++;
+        }
+        else if(map[y][laser_x] > 3 && map[y][laser_x] < 10 && stone_counter) {
+            stone_counter = 4;
+            bomb_explosion(map[y][laser_x], map, y, laser_x);
+        }
+        y++;
+    }
 }
 int random_number(int upper, int lower){ // [1,2]
     srand(time(0));
