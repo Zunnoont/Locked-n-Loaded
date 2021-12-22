@@ -12,6 +12,8 @@
 #define GATE 17
 #define CHARACTER 15
 #define SHOOT 21
+#define EXPLOSION 19
+#define BOMB 4
 
 void print_map (int map[SIZE][SIZE]);
 
