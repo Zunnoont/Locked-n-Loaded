@@ -18,8 +18,8 @@ int main(void) {
     char direction;
     int spawn_x = random_number(15,1);
     int spawn_y = random_number(15,1);
-    int enemy1_x = random_number(15,0);
-    int enemy1_y = random_number(15,0);
+    int enemy1_x = 14;
+    int enemy1_y = 14;
     int enemy2_x = random_number(15,0);
     int enemy2_y = random_number(15,0);
     int enemy3_x = random_number(15,0);
@@ -53,7 +53,6 @@ int main(void) {
         }
     }
 
-    
     map[enemy1_x][enemy1_y] = ENEMY;
     map[enemy2_x][enemy2_y] = ENEMY;
     map[enemy3_x][enemy3_y] = ENEMY;
@@ -62,7 +61,6 @@ int main(void) {
         map[i][0] = GATE;
     }
 
-   
     printf("\e[1;32mYou are Butch, a member of the [redacted] military tasked taking down human hybrid bioweapons that escaped from a top-secret testing facility in [redacted].\n");
     printf("\n");
     printf("You are tasked with rescuing civilians and taking down these enemies with your long ranged sniper.\n ");
@@ -142,6 +140,10 @@ int main(void) {
             if(map[enemy1_x][enemy1_y] == ENEMY) {
                 map[enemy1_x][enemy1_y] = EMPTY;
                 enemy1_y--;
+                if(enemy1_x == spawn_x && enemy1_y == spawn_y) {
+                    printf("GAME OVER\n");
+                    exit(0);
+                }
                 map[enemy1_x][enemy1_y] = ENEMY;
             }
             if(map[enemy2_x][enemy2_y] == ENEMY) {
@@ -149,11 +151,26 @@ int main(void) {
                 enemy2_y--;
                 map[enemy2_x][enemy2_y] = ENEMY;
             }
+
             print_map(map);
+            for(int i = 0; i < SIZE; i++) {
+                if(i == enemy1_x && enemy1_y == 0) {
+                    printf("GAME OVER!\n");
+                    exit(0);
+                }
+                else if(i == enemy2_x && enemy2_y == 0) {
+                    printf("GAME OVER!\n");
+                    exit(0);
+                }
+                else if(i == enemy3_x && enemy3_y == 0) {
+                    printf("GAME OVER!\n");
+                    exit(0);
+                }
+            }
         }
     }
     
-    //int map2[SIZE - 5][SIZE - 5] = {EMPTY};
+    //int map2[SIZE2][SIZE2] = {EMPTY};
    
     
   
@@ -195,7 +212,15 @@ void print_map (int map[SIZE][SIZE]) {
                 color_reset();
             }
             else if(map[i][j] == GATE) {
+                printf("\e[1;35m");
                 printf("} ");
+                color_reset();
+            }
+            else if(map[i][j] == SHOOT) {
+                printf("\e[1;34m");
+                printf("0 ");
+                color_reset();
+                map[i][j] = EMPTY;
             }
             j++;
         }
@@ -257,16 +282,11 @@ void shoot_laser (int map[SIZE][SIZE], int laser_y, int laser_x) {
     // and one will remain which is the most furtherst out, 6 5 1.
     while (keeplooping == 1 && x < SIZE) {
         // we just shoot the laser and turn everything into 0 there
-        if (map[laser_y][x] == ENEMY && stone_counter < 4) {
-            map[laser_y][x] = EMPTY;
-            stone_counter++;
-            //check_for_game_end (map);
-            // Using the blocks variable that scanned the number of blocks
-            // and doing blocks= blocks - 1 does not work inside this function
-            // It only works in the main function so 
-            // i will use a 2d for loop to check for a game end
+        if(x != 0) {
+            map[laser_y][x] = SHOOT;
         }
-        else if (map[laser_y][x] > 3 && map[laser_y][x] < 10 && stone_counter < 4) {
+        
+        if (map[laser_y][x] > 3 && map[laser_y][x] < 10 && stone_counter < 4) {
             stone_counter = 4;
             bomb_explosion (map[laser_y][x], map, laser_y, x);
             //check_for_game_end (map, laser_y);
@@ -276,11 +296,10 @@ void shoot_laser (int map[SIZE][SIZE], int laser_y, int laser_x) {
     int y = 0;
     stone_counter = 0;
     while(keeplooping == 1 && y < SIZE) {
-        if(map[y][laser_x] == ENEMY && stone_counter < 4) {
-            map[y][laser_x] = EMPTY;
-            stone_counter++;
+        if(laser_x != 0) {
+            map[y][laser_x] = SHOOT;
         }
-        else if(map[y][laser_x] > 3 && map[y][laser_x] < 10 && stone_counter) {
+        if(map[y][laser_x] > 3 && map[y][laser_x] < 10 && stone_counter) {
             stone_counter = 4;
             bomb_explosion(map[y][laser_x], map, y, laser_x);
         }
